@@ -3,7 +3,9 @@ from .serializers import UserSerializer
 from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
-
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 
 class RegisterView(generics.CreateAPIView):
@@ -14,8 +16,11 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]  # Allow any user to register
 
-    def perform_create(self, serializer):
-        """
-        Save the new user instance.
-        """
-        serializer.save()  # This will call the create method in UserSerializer
+class ProtectedView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        response = {
+            'status': 'Rewuest was permitted'
+        }
+        return Response(response)
